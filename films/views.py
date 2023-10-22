@@ -1,10 +1,29 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.staticfiles.finders import find
 from .models import Film
+
+
+import os
+module_dir = os.path.dirname(__file__)  # get current directory
+
 # Create your views here.
+def homepage(request):
+    films_list = Film.objects.all()
+
+    context = {"films":films_list}
+    return render(request, "films/homepage.html", context)
+
+def film_detail(request, pk):
+    film = get_object_or_404(Film, pk=pk)
+
+    context = {"film":film}
+    return render(request, "films/film_detail.html", context)
+
+
 def load_films(request):
-    file_ = find('dicts/6-letter-words.txt')
-    with open(file_) as f:
+    file_ = find('films_data.txt')
+    file_path = os.path.join(module_dir, 'films_data.txt')
+    with open(file_path, "r", encoding='utf-8') as f:
         data =f.read()
     
     newFilms = 0
@@ -29,3 +48,4 @@ def load_films(request):
             )
             newFilms += 1
         print(f"Adding Films {round((item/lenOfData)*100,2)}%")
+        return redirect("/")
