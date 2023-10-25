@@ -7,12 +7,11 @@
 	<div class="container">
 
 		<ul class="list-group">
-			{% for film in films %}
-				<li class="list-group-item">
-					<a href="{% url 'films:film_d' film.id %}"> <b>{{film.title}}</b> </a> <br>
-					{{film.released|date:"Y"}}  {{film.duration}}  {{film.age_rating}}
-				</li>
-			{% endfor %}
+			
+			<li class="list-group-item">
+				<b>{{film.title}}</b><br>
+				{{film.released|date:"Y"}}  {{film.duration}}  {{film.age_rating}}
+			</li>
 		</ul>
 		
 

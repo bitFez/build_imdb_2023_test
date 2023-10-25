@@ -20,7 +20,7 @@ def film_detail(request, pk):
     film = get_object_or_404(Film, pk=pk)
 
     context = {"film":film}
-    return render(request, "films/film_detail.html", context)
+    return render(request, "films/film_d.html", context)
 
 
 def load_films(request):
