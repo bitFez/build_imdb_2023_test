@@ -4,7 +4,7 @@ from django.db import models
 # Create your models here.
 class Film(models.Model):
     title = models.CharField(max_length=250)
-    released = models.DateField(auto_now=False, auto_now_add=False)
+    released = models.DateField(auto_now=False, auto_now_add=False, default="1994-01-01")
     certificate = models.CharField(max_length=3)
     duration = models.DurationField()
     genre = models.CharField(max_length=100)
@@ -15,6 +15,7 @@ class Film(models.Model):
     star4 = models.CharField(max_length=250)
     overview = models.TextField(max_length=1000)
     poster = models.URLField(max_length=200)
+    gross = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title

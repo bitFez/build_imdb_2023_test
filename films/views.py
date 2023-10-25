@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.staticfiles.finders import find
+import re
+from datetime import datetime, date, timedelta
+from django.utils.dateparse import parse_duration
 from .models import Film
 
 
@@ -22,21 +25,24 @@ def film_detail(request, pk):
 
 def load_films(request):
     file_ = find('films_data.txt')
-    file_path = os.path.join(module_dir, 'films_data.txt')
+    file_path = os.path.join(module_dir, 'films_data3.txt')
     with open(file_path, "r", encoding='utf-8') as f:
-        data =f.read()
+        data =f.readlines()
     
     newFilms = 0
     lenOfData = len(data)
     for item in range(0, len(data)):
         film_row = data[item].rstrip('\n')
-        poster,title,released,cert,duration,genre,iMDB_Rating,overview,director,star1,star2,star3,star4,gross = film_row.split(',')
+        poster,title,released,cert,duration,genre,iMDB_Rating,overview,director,star1,star2,star3,star4,gross = re.split(r',(?=")',film_row)
+        released = f'{released[1:-1]}-01-01'
+        dur=f'{duration[1:-5]}'
+        f_dur = timedelta(minutes=int(dur))
         if not Film.objects.filter(title=title).exists():
             obj = Film.objects.update_or_create(
                 title = title,
                 released=released,
-                certficate=cert,
-                duration=duration,
+                certificate=cert,
+                duration=f_dur,
                 genre=genre,
                 director=director,
                 star1=star1,
@@ -44,8 +50,9 @@ def load_films(request):
                 star3=star3,
                 star4=star4,
                 overview=overview,
-                poster=poster
+                poster=poster,
+                gross=int(gross[1:-1].replace(',', ''))
             )
             newFilms += 1
         print(f"Adding Films {round((item/lenOfData)*100,2)}%")
-        return redirect("/")
+    return redirect("/")
